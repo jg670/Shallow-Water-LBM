@@ -1,0 +1,32 @@
+# =================================================================
+# Intel MPI Makefile for Lattice Boltzmann (Pure MPI - Single File)
+# =================================================================
+
+FC      = mpiifx
+EXE     = lbm_mpi
+SRCDIR  = .
+OBJDIR  = objects_mpi
+MODDIR  = $(OBJDIR)/mod
+
+# Base compilation flags
+FFLAGS  = -free -O3 -module $(MODDIR)
+
+# Single Source and Object
+SRC     = $(SRCDIR)/LatticeBoltzmannMPI.f90
+OBJ     = $(OBJDIR)/LatticeBoltzmannMPI.o
+
+all: directories $(EXE)
+
+directories:
+	@mkdir -p $(OBJDIR) $(MODDIR)
+
+$(EXE): $(OBJ)
+	$(FC) $(FFLAGS) -o $@ $^
+
+$(OBJ): $(SRC)
+	$(FC) $(FFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJDIR) $(EXE)
+
+.PHONY: all directories clean

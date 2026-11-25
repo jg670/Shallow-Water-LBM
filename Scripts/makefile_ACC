@@ -1,0 +1,32 @@
+# =================================================================
+# NVIDIA Makefile for Lattice Boltzmann (OpenACC + MPI - Single File)
+# =================================================================
+
+FC      = mpif90
+EXE     = lbm_acc
+SRCDIR  = .
+OBJDIR  = objects_acc
+MODDIR  = $(OBJDIR)/mod
+
+# Compilation flags for OpenACC
+FFLAGS  = -Mfree -O3 -acc -gpu=ccall -module $(MODDIR)
+
+# Single Source and Object
+SRC     = $(SRCDIR)/LatticeBoltzmannOpenACC.f90
+OBJ     = $(OBJDIR)/LatticeBoltzmannOpenACC.o
+
+all: directories $(EXE)
+
+directories:
+	@mkdir -p $(OBJDIR) $(MODDIR)
+
+$(EXE): $(OBJ)
+	$(FC) $(FFLAGS) -o $@ $^
+
+$(OBJ): $(SRC)
+	$(FC) $(FFLAGS) -c $< -o $@
+
+clean:
+	rm -rf $(OBJDIR) $(EXE)
+
+.PHONY: all directories clean
